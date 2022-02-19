@@ -1,5 +1,4 @@
 import os
-import sys
 import pandas as pd
 
 
@@ -11,7 +10,7 @@ def menu():
     print('2 - Vizualizar tabela')
     print('3 - Exlcluir entrada')
     print('4 - Mudar diretorio')
-    menuop = int(input('>>>>'))
+    menuop = int(input('>>>> '))
     return menuop
 
 
@@ -39,7 +38,7 @@ def path():
         arquivo = open(diretorio, 'w+')
         caminho = input("Digite onde seá salvo os arquivos. ")
         arquivo.writelines(caminho)
-        os.system("attrib +h diretorio.txt")
+        os.system("attrib +h diretorio.txt") 
         arquivo.close()
         print("diretorio salvo")
 
@@ -74,24 +73,23 @@ def cadastro():
         elif dias == "MUDAR":
             cadastro()
         else:
-            print("Continuando")
+            print("Continuando") # Alguns prints no codigo eu usei apenas para marcação, pra eu não me perder nos loops, vou retirar depois.
             filename = (mes + "/" + dias + ".csv")
             os.path.isfile(filename)
             if os.path.isfile(filename):
-                result = pd.read_csv(filename)  # read the csv file
-                print(result.head())  # print result
+                result = pd.read_csv(filename)  
+                print(result.head()) 
                 result.head(15)
-                if novo_programa in result.head():
+                if novo_programa in result.head(): # Aqui verifica se já existe uma coluna com o nome.
                     print("ja tem o programa")
                     result.tail(15)
-                    if vt in result.tail():
+                    if vt in result.tail():  # Aqui verifio se já existe uma entrada com o mesmo nome na coluna. 
                         print("ja tem o vt")
                     else:
                         print("não tem o vt, sera adicionado...")
                         print(result)
-                        result.loc[-1, novo_programa] = vt
-                        result.update(result.fillna('--'))
-                        # saving the dataframe
+                        result.loc[-1, novo_programa] = vt # Esse foi o comando que melhor funcionou mas adiciona o vt a ultima linha da coluna, eu queria que ele adicionasse a primeira linha com valor NaN na coluna especificada mas não conseguí.
+                        result.update(result.fillna('--')) # Aqui eu substituo os NaN.
                         result.to_csv(filename, index=False)
                         print(result.head())
                 else:
@@ -101,13 +99,12 @@ def cadastro():
                     print(result.head())
                     result.to_csv(filename, index=False)
             else:
-                print("não existe tabela para o dia \n será criada uma tabela")
-                programas = {' ': ['']}
+                print("não existe tabela para o dia \n será criada uma tabela") # Se não tiver uma tabela para o dia.
+                programas = {' ': ['']} # o codigo cria um dicionario vazio, essa parte parece funcionar bem, o problema é quando existe a tabela e ele adiciona novas entradas.
                 programas.setdefault(novo_programa, vt)
                 df = pd.DataFrame.from_dict(programas)
                 print(df)
-                # saving the dataframe
-                df.to_csv(filename, index=False)
+                df.to_csv(filename, index=False) # Talvez fosse melhor eu gerar o DataFrame para Excel? 
 
 
 def vizualizar():
